@@ -3,7 +3,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class ModelBuku extends CI_Model
 {
-    // Manajemen buku
+    // Manajemen Buku
+    public function tampil()
+{
+    // Logika untuk mengambil data buku dari database
+    return $this->db->get('buku'); // Contoh sederhana mengambil semua data
+}
     public function getBuku()
     {
         return $this->db->get('buku');
@@ -29,17 +34,17 @@ class ModelBuku extends CI_Model
         $this->db->delete('buku', $where);
     }
 
-    public function total($field, $where)
+    public function total($field, $where = []) // Parameter where diubah menjadi array dengan default kosong
     {
         $this->db->select_sum($field);
-        if (!empty($where) && count($where) > 0) {
+        if (!empty($where)) {
             $this->db->where($where);
         }
         $this->db->from('buku');
         return $this->db->get()->row($field);
     }
 
-    // Manajemen kategori
+    // Manajemen Kategori
     public function getKategori()
     {
         return $this->db->get('kategori');
@@ -66,12 +71,16 @@ class ModelBuku extends CI_Model
     }
 
     // Join
-    public function joinKategoriBuku($where)
+    public function joinKategoriBuku($where = []) // Parameter where diubah menjadi array dengan default kosong
     {
-        $this->db->select('buku.id_kategori, kategori.kategori');
+        $this->db->select('buku.id_kategori,kategori.kategori');
         $this->db->from('buku');
         $this->db->join('kategori', 'kategori.id = buku.id_kategori');
-        $this->db->where($where);
+
+        if (!empty($where)) {
+            $this->db->where($where);
+        }
+
         return $this->db->get();
     }
 }
